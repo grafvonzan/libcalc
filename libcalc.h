@@ -1,6 +1,6 @@
-//LibCalc Version .1
-//Written by Zander S. Ackerman
-//All Rights Reserved
+//libcalc Calculus Library v.1
+//Written by Zander Scott Ackerman
+//GNU GPLv3
 
 #ifndef libcalc
 #define libcalc
@@ -8,7 +8,7 @@
 #define PI 3.14159265358979323846264338327950288419716
 //Utility
 //Create a multidimensional array using dynamic memory
-double initArray(int[]);
+double initArray(int[], int);
 
 //Structures
 
