@@ -4,6 +4,7 @@
 
 #include "libcalc.h"
 #include <iostream>
+#include <math.h>
 
 
 double initArray(int data[], int dimensionCount){
@@ -34,6 +35,7 @@ double initArray(int data[], int dimensionCount){
 
 
 class coordinate{
+    private:
 		int dimension;
 		double* location;
 	public:
@@ -41,18 +43,44 @@ class coordinate{
 			dimension=dim;
 			location=new double[dim];
 		}
-		void setDimension(int);
-		int getDimension();
-		void changeLocation(double[]);
-		double getLocation();
+		void setDimension(int input){
+			dimension=input;
+		}
+		int getDimension(){
+			return dimension;
+		}
+		void setLocation(double input){
+			*location=input;
+		}
+		double getLocation(){
+			return *location;
+		}
+		double getElement(int key){
+			return location[key];
+		}
 };
 
-class vector : coordinate{
-		double direction[];
+class vector : public coordinate{
+	private:
+		double* direction;
 	public:
-		vector();
-		void changeDirection(double[]);
-		double getDirection();
+		vector(int dim) : coordinate(dim){
+			setDimension(dim);
+			double* tempLocation=new double[dim];
+			setLocation(*tempLocation);
+			direction=new double[dim];
+		}
+		void setDirection(double input){
+			*direction=input;
+		}
+		double getDirection(){
+			return *direction;
+		}
+		double getDirectionElement(int element){
+			//element 0=x, element 1=y, etc.
+			return direction[element];
+		}
+
 
 };
 
@@ -60,11 +88,62 @@ double degToRad(double input){
 	double output;
 	output=(input/180)*PI;
 	return output;
-};
+}
 
 double radToDeg(double input){
 	double output;
 	output=(input/PI)*180;
+	return output;
+}
+
+double magnitude(vector input){
+	double output=0;
+	int dim=input.getDimension();
+	int i=0;
+	while (i<dim){
+		output=output+pow((input.getDirectionElement(i)),2);
+		i++;
+	}
+	output=(output, .5);
+	return output;
+}
+
+double distance(coordinate inputA, coordinate inputB){
+	double output;
+	int i=0;
+	int dimA=inputA.getDimension();
+	int dimB=inputB.getDimension();
+	int i=0;
+
+	//These two conditionals handle obtaining the square of the difference between the coordinates positions
+	if(dimA>=dimB){
+		while(i<dimA){
+			if(i>=dimB){
+				//Input B doesn't even have an element at i, if we have gone into this conditional.
+				output=output+pow(inputA.getElement(i),2);
+			}
+			else{
+				output=output+pow((inputA.getElement(i)-inputB.getElement[i]),2);
+			}
+			i++;
+		}
+	}
+	else{
+		while(i<dimB){
+					if(i>=dimA){
+						//Input A doesn't even have an element at i, if we have gone into this conditional.
+						output=output+pow(inputB.getElement(i),2);
+					}
+					else{
+						output=output+pow((inputA.getElement(i)-inputB.getElement[i]),2);
+					}
+					i++;
+				}
+	}
+
+	//To actually get the distance, we take the square root of output
+	output=pow(output,.5);
+
 	return output;
 }
 
