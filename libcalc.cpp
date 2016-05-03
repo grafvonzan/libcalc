@@ -1,60 +1,149 @@
-//LibCalc Version .1
-//Written by Zander S. Ackerman
-//All Rights Reserved
+//libcalc Calculus Library v.1
+//Written by Zander Scott Ackerman
+//GNU GPLv3
 
-#include <libcalc.h>
+#include "libcalc.h"
+#include <iostream>
+#include <math.h>
 
-double* initArray(int data[], int startElement, int dimensionCount){
-	//data: element 0= number of dimensions
-	//element 1 through inf define the size of each dimension
 
-	double* output;
-	output=new double[data[startElement]];
+double initArray(int data[], int dimensionCount){
+    //data: element 0= number of dimensions
+    //element 1 through inf define the size of each dimension
+    //dimensionCount keeps track of the current dimension being manipulated by the function
 
-	int i=dimensionCount;
 
-	while(i<data[0]){
-		output[i]= initArray(data[], startElement++, i++);
-		i++;
-	}
-	return output;
+    //Allocate dynamic memory for the current dimension
+    double* output;
+    output=new double[data[dimensionCount]];
+
+    int i=dimensionCount;
+
+    while(i<data[dimensionCount]){
+	    if( !(output[i]= initArray(data, dimensionCount++))){
+	    	std::cout<< "Error! Out of Memory!";
+	    	break;
+	    }
+
+	    i++;
+    }
+    //returning the generated array tacks on the generated dimension to the lower dimension preceding it
+    double array=*output;
+    return array;
 }
 
 
 
 class coordinate{
+    private:
 		int dimension;
 		double* location;
 	public:
 		coordinate(int dim){
 			dimension=dim;
-			double* location;
 			location=new double[dim];
 		}
-		void setDimension(int);
-		int getDimension();
-		void changeLocation(double[]);
-		double getLocation();
+		void setDimension(int input){
+			dimension=input;
+		}
+		int getDimension(){
+			return dimension;
+		}
+		void setLocation(double input){
+			*location=input;
+		}
+		double getLocation(){
+			return *location;
+		}
+		double getElement(int key){
+			return location[key];
+		}
 };
 
-class vector : coordinate{
-		double direction[];
+class vector : public coordinate{
+	private:
+		double* direction;
 	public:
-		vector();
-		void changeDirection(double[]);
-		double getDirection();
+		vector(int dim) : coordinate(dim){
+			setDimension(dim);
+			double* tempLocation=new double[dim];
+			setLocation(*tempLocation);
+			direction=new double[dim];
+		}
+		void setDirection(double input){
+			*direction=input;
+		}
+		double getDirection(){
+			return *direction;
+		}
+		double getDirectionElement(int element){
+			//element 0=x, element 1=y, etc.
+			return direction[element];
+		}
 
-}
+
+};
 
 double degToRad(double input){
 	double output;
 	output=(input/180)*PI;
 	return output;
-};
+}
 
 double radToDeg(double input){
 	double output;
 	output=(input/PI)*180;
+	return output;
+}
+
+double magnitude(vector input){
+	double output=0;
+	int dim=input.getDimension();
+	int i=0;
+	while (i<dim){
+		output=output+pow((input.getDirectionElement(i)),2);
+		i++;
+	}
+	output=(output, .5);
+	return output;
+}
+
+double distance(coordinate inputA, coordinate inputB){
+	double output;
+	int i=0;
+	int dimA=inputA.getDimension();
+	int dimB=inputB.getDimension();
+	int i=0;
+
+	//These two conditionals handle obtaining the square of the difference between the coordinates positions
+	if(dimA>=dimB){
+		while(i<dimA){
+			if(i>=dimB){
+				//Input B doesn't even have an element at i, if we have gone into this conditional.
+				output=output+pow(inputA.getElement(i),2);
+			}
+			else{
+				output=output+pow((inputA.getElement(i)-inputB.getElement[i]),2);
+			}
+			i++;
+		}
+	}
+	else{
+		while(i<dimB){
+					if(i>=dimA){
+						//Input A doesn't even have an element at i, if we have gone into this conditional.
+						output=output+pow(inputB.getElement(i),2);
+					}
+					else{
+						output=output+pow((inputA.getElement(i)-inputB.getElement[i]),2);
+					}
+					i++;
+				}
+	}
+
+	//To actually get the distance, we take the square root of output
+	output=pow(output,.5);
+
 	return output;
 }
 
