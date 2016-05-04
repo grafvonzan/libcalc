@@ -49,11 +49,11 @@ class coordinate{
 		int getDimension(){
 			return dimension;
 		}
-		void setLocation(double input){
-			*location=input;
+		void setLocation(double input[]){
+			location=input;
 		}
-		double getLocation(){
-			return *location;
+		double* getLocation(){
+			return location;
 		}
 		double getElement(int key){
 			return location[key];
@@ -67,14 +67,14 @@ class vector : public coordinate{
 		vector(int dim) : coordinate(dim){
 			setDimension(dim);
 			double* tempLocation=new double[dim];
-			setLocation(*tempLocation);
+			setLocation(tempLocation);
 			direction=new double[dim];
 		}
-		void setDirection(double input){
-			*direction=input;
+		void setDirection(double input[]){
+			direction=input;
 		}
-		double getDirection(){
-			return *direction;
+		double* getDirection(){
+			return direction;
 		}
 		double getDirectionElement(int element){
 			//element 0=x, element 1=y, etc.
@@ -104,7 +104,7 @@ double magnitude(vector input){
 		output=output+pow((input.getDirectionElement(i)),2);
 		i++;
 	}
-	output=(output, .5);
+	output=pow(output, .5);
 	return output;
 }
 
@@ -113,7 +113,6 @@ double distance(coordinate inputA, coordinate inputB){
 	int i=0;
 	int dimA=inputA.getDimension();
 	int dimB=inputB.getDimension();
-	int i=0;
 
 	//These two conditionals handle obtaining the square of the difference between the coordinates positions
 	if(dimA>=dimB){
@@ -123,7 +122,7 @@ double distance(coordinate inputA, coordinate inputB){
 				output=output+pow(inputA.getElement(i),2);
 			}
 			else{
-				output=output+pow((inputA.getElement(i)-inputB.getElement[i]),2);
+				output=output+pow((inputA.getElement(i)-inputB.getElement(i)),2);
 			}
 			i++;
 		}
@@ -135,7 +134,7 @@ double distance(coordinate inputA, coordinate inputB){
 						output=output+pow(inputB.getElement(i),2);
 					}
 					else{
-						output=output+pow((inputA.getElement(i)-inputB.getElement[i]),2);
+						output=output+pow((inputA.getElement(i)-inputB.getElement(i)),2);
 					}
 					i++;
 				}
@@ -144,6 +143,44 @@ double distance(coordinate inputA, coordinate inputB){
 	//To actually get the distance, we take the square root of output
 	output=pow(output,.5);
 
+	return output;
+}
+
+double dotProduct(vector inputA, vector inputB){
+	double output;
+		int dimA=inputA.getDimension();
+		int dimB=inputB.getDimension();
+		int dimLarger;
+		if (dimA>=dimB){
+			dimLarger=dimA;
+		}
+		else{
+			dimLarger=dimB;
+		}
+		int i=0;
+		while(i<dimLarger){
+			output=output+(inputA.getElement(i)*inputB.getElement(i));
+			i++;
+		}
+	return output;
+
+}
+
+//Warning: only works in 3-Space!
+vector crossProduct(vector A, vector B){
+	vector output(3);
+	if(A.getDimension()!=3 || B.getDimension()!=3){
+		output.setDirection(NULL);
+		return output;
+	}
+	else{
+		double tempDirection[3];
+		//Using Definition of 3 Space Cross Product
+		tempDirection[0]=(A.getElement(1)*B.getElement(2))-(B.getElement(1)*A.getElement(2));
+		tempDirection[1]=(A.getElement(0)*B.getElement(2))-(B.getElement(0)*A.getElement(2));
+		tempDirection[2]=(A.getElement(0)*B.getElement(1))-(B.getElement(0)*A.getElement(1));
+		output.setDirection(tempDirection);
+	}
 	return output;
 }
 
