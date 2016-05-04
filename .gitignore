@@ -1,0 +1,10 @@
+*.o
+*.a
+*.d
+.project
+.cproject
+*.mk
+makefile
+libcalc
+.settings
+.gitignore~
