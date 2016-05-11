@@ -14,11 +14,53 @@ double initArray(int[], int);
 
 //Classes
 //Used to hold coordinate values.
-class coordinate;
-class vector;
+class coordinate{
+private:
+	int dimension;
+	double* location;
+
+public:
+	coordinate(int);
+	void setDimension(int);
+	int getDimension();
+	void setLocation(double input[]);
+	double* getLocation();
+	double getElement(int);
+	void modifyElement(int, double);
+	void printCoordinate();
+
+
+};
+class vector : public coordinate{
+private:
+	double* direction;
+public:
+	vector(int);
+	void setDirection(double[]);
+	double* getDirection();
+	double getDirectionElement(int);
+	void printVector();
+
+
+};
 
 //holds arrays of coordinate values
-class function;
+class function{
+private:
+	coordinate* array;
+	int size;
+	int dimension;
+public:
+	function(coordinate*, int, int);
+	coordinate* getArray();
+	int getSize();
+	int getDimension();
+	coordinate* takeDerivative2D(int, int);
+	coordinate* takeIntegral2D(int, int);
+	void printFunction2D();
+
+
+};
 
 //Conversion Functions
 double degToRad(double);

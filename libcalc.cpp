@@ -34,55 +34,130 @@ double initArray(int data[], int dimensionCount){
 
 
 
-class coordinate{
-    private:
-		int dimension;
-		double* location;
-	public:
-		coordinate(int dim){
-			dimension=dim;
-			location=new double[dim];
-		}
-		void setDimension(int input){
-			dimension=input;
-		}
-		int getDimension(){
-			return dimension;
-		}
-		void setLocation(double input[]){
-			location=input;
-		}
-		double* getLocation(){
-			return location;
-		}
-		double getElement(int key){
-			return location[key];
-		}
-};
 
-class vector : public coordinate{
-	private:
-		double* direction;
-	public:
-		vector(int dim) : coordinate(dim){
-			setDimension(dim);
-			double* tempLocation=new double[dim];
-			setLocation(tempLocation);
-			direction=new double[dim];
-		}
-		void setDirection(double input[]){
-			direction=input;
-		}
-		double* getDirection(){
-			return direction;
-		}
-		double getDirectionElement(int element){
-			//element 0=x, element 1=y, etc.
-			return direction[element];
-		}
+coordinate::coordinate(int dim){
+	dimension=dim;
+	location=new double[dim];
+}
+void coordinate::setDimension(int input){
+	dimension=input;
+}
+int coordinate::getDimension(){
+	return dimension;
+}
+void coordinate::setLocation(double input[]){
+	location=input;
+}
+double* coordinate::getLocation(){
+	return location;
+}
+double coordinate::getElement(int key){
+	return location[key];
+}
+void coordinate::modifyElement(int dimension, double delta){
+	location[dimension]=location[dimension]+delta;
+}
+void coordinate::printCoordinate(){
+	std::cout<<"Location:";
+	int dim=0;
+	while(dim<dimension){
+		std::cout<<getElement(dim)<<",";
+		dim++;
+	}
+	std::cout<<"\n";
 
 
-};
+}
+
+
+
+
+vector::vector(int dim) : coordinate(dim){
+	setDimension(dim);
+	double* tempLocation=new double[dim];
+	setLocation(tempLocation);
+	direction=new double[dim];
+}
+void vector::setDirection(double input[]){
+	direction=input;
+}
+double* vector::getDirection(){
+	return direction;
+}
+double vector::getDirectionElement(int element){
+	//element 0=x, element 1=y, etc.
+	return direction[element];
+}
+void vector::printVector(){
+	std::cout<<"Location:";
+	int dim=0;
+	while(dim<getDimension()){
+		std::cout<<getElement(dim)<<",";
+		dim++;
+	}
+	std::cout<<"\n";
+	std::cout<<"Direction:";
+	dim=0;
+	while(dim<getDimension()){
+		std::cout<<getDirectionElement(dim)<<",";
+		dim++;
+	}
+	std::cout<<"\n";
+
+
+}
+
+
+
+function::function(coordinate* arrayTemp, int sizeOfArray, int tempDim){
+	array=arrayTemp;
+	size=sizeOfArray;
+	dimension=tempDim;
+}
+coordinate* function::getArray(){
+	return array;
+}
+int function::getSize(){
+	return size;
+}
+int function::getDimension(){
+	return dimension;
+}
+//I guess this is more a partial
+//
+coordinate* function::takeDerivative2D(int variable, int withRespect ){
+	int i=1;
+	double location[2];
+	coordinate* derivative;
+	while(i<size){
+		derivative[i-1]= *(new coordinate(2));
+		location[0]=array[i].getElement(withRespect);
+		location[1]=(array[i+1].getElement(variable)-array[i-1].getElement(variable))/(array[i+1].getElement(withRespect)-array[i-1].getElement(withRespect));
+		derivative[i-1].setLocation(location);
+		i++;
+	}
+	return derivative;
+}
+coordinate* function::takeIntegral2D(int variable, int withRespect){
+	int i=1;
+	double location[2];
+	coordinate* integral;
+	while(i<size){
+		integral[i-1]=*(new coordinate(2));
+		location[0]=array[i].getElement(withRespect);
+		location[1]=(array[i].getElement(variable))*(array[i+1].getElement(withRespect)-array[i-1].getElement(withRespect));
+		integral[i-1].setLocation(location);
+		i++;
+	}
+	return integral;
+}
+void function::printFunction2D(){
+	int i=0;
+	while(i<getSize()){
+		std::cout <<i<<"\n"<<"x="<<array[i].getElement(0)<<"\n"<<"y="<<array[i].getElement(1);
+		i++;
+	}
+}
 
 double degToRad(double input){
 	double output;
@@ -159,7 +234,7 @@ double dotProduct(vector inputA, vector inputB){
 		}
 		int i=0;
 		while(i<dimLarger){
-			output=output+(inputA.getElement(i)*inputB.getElement(i));
+			output=output+(inputA.getDirectionElement(i)*inputB.getDirectionElement(i));
 			i++;
 		}
 	return output;
@@ -176,9 +251,9 @@ vector crossProduct(vector A, vector B){
 	else{
 		double tempDirection[3];
 		//Using Definition of 3 Space Cross Product
-		tempDirection[0]=(A.getElement(1)*B.getElement(2))-(B.getElement(1)*A.getElement(2));
-		tempDirection[1]=(A.getElement(0)*B.getElement(2))-(B.getElement(0)*A.getElement(2));
-		tempDirection[2]=(A.getElement(0)*B.getElement(1))-(B.getElement(0)*A.getElement(1));
+		tempDirection[0]=(A.getDirectionElement(1)*B.getDirectionElement(2))-(B.getDirectionElement(1)*A.getDirectionElement(2));
+		tempDirection[1]=(A.getDirectionElement(0)*B.getDirectionElement(2))-(B.getDirectionElement(0)*A.getDirectionElement(2));
+		tempDirection[2]=(A.getDirectionElement(0)*B.getDirectionElement(1))-(B.getDirectionElement(0)*A.getDirectionElement(1));
 		output.setDirection(tempDirection);
 	}
 	return output;
